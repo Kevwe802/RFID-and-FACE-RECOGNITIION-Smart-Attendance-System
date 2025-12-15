@@ -1,0 +1,75 @@
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #000;
+    line-height: 1.6;
+}
+
+.navbar {
+    background-color: #073f7e;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.navbar a {
+    color: #f2f2f2;
+    text-decoration: none;
+    padding: 14px 16px;
+    font-size: 17px;
+}
+
+.navbar a:hover {
+    background-color: white;
+    color: #073f7e;
+}
+
+.content {
+    padding: 20px;
+    text-align: center;
+}
+
+.table-container {
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1200px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.styled-table thead tr {
+    background-color: #073f7e;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th, .styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #333;
+}
+
+footer {
+    font-size: 14px;
+}

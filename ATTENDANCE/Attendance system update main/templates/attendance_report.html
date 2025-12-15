@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Attendance Sheet</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        .header .left {
+            display: flex; align-items: center;
+        }
+        .header img.logo { height: 50px; margin-right: 15px; }
+        .header .title {
+            text-align: center; flex: 1;
+        }
+        .header .photo img {
+            height: 80px; width: 70px; object-fit: cover; border: 1px solid #000;
+        }
+        h2 { margin: 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        td, th { border: 1px solid #000; padding: 8px; text-align: center; }
+        .sign-section { margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="left">
+            <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo" class="logo">
+        </div>
+        <div class="title">
+            <h2>DELTA STATE UNIVERSITY, ABRAKA, NIGERIA</h2>
+            <h3>COURSE ATTENDANCE SHEET</h3>
+        </div>
+        <div class="photo">
+            <img src="{{ url_for('static', filename='attendance_photos/' + student.Name + '.jpg') }}" alt="Student Photo">
+        </div>
+    </div>
+
+    <table>
+        <tr>
+            <td><b>UID:</b> {{ student.UID }}</td>
+            <td><b>Name:</b> {{ student.Name }}</td>
+            <td><b>Matric No:</b> {{ student.Matric_number }}</td>
+        </tr>
+        <tr>
+            <td><b>Department:</b> {{ student.Department }}</td>
+            <td><b>Level:</b> {{ student.Level }}</td>
+            <td></td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <th>Course Code</th>
+            <th>Course Name</th>
+            <th>Attendance %</th>
+            <th>Lecturer's Signature/Date</th>
+        </tr>
+        {% for row in report %}
+        <tr>
+            <td>{{ row.Course_code }}</td>
+            <td>{{ row.Course_name }}</td>
+            <td>{{ row.percentage }}</td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="sign-section">
+        <p>Course Adviser: __________________ Sign: __________ Date: ____________</p>
+        <p>HOD: __________________ Sign: __________ Date: ____________</p>
+        <p>Dean: __________________ Sign: __________ Date: ____________</p>
+    </div>
+</body>
+</html>

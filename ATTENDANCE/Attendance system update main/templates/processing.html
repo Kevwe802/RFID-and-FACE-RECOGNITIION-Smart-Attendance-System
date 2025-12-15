@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid  #4169E1;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-text {
+            font-size: 18px;
+            color: #555;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    <h1>Processing the selected course...</h1>
+    <div class="status-text" id="statusText">Please wait, this might take a few seconds...</div>
+    <form action="/stop_attendance" method="get">
+    <br>
+    <button type="submit" style="background: red; color: white; padding:10px 20px; border:none; border-radius:5px;">
+        Stop Attendance
+    </button>
+</form>
+
+    <script>
+        // Simulate dynamic status updates using JavaScript
+        const statusMessages = [
+            "Initializing course data...",
+            "Loading student records...",
+            "Preparing Facial recognition scan...",
+            "Finalizing preparations..."
+        ];
+
+        let messageIndex = 0;
+        const statusTextElement = document.getElementById('statusText');
+
+        // Update status message every 3 seconds
+        const statusInterval = setInterval(() => {
+            if (messageIndex < statusMessages.length) {
+                statusTextElement.textContent = statusMessages[messageIndex];
+                messageIndex++;
+            } else {
+                clearInterval(statusInterval);
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

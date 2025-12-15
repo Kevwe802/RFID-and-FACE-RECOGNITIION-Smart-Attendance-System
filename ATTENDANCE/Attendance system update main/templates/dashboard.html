@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; height: 100vh;">
+
+    <!-- Navbar -->
+    <nav style="background-color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <div class="nav-left" style="display: flex; align-items: center;">
+            <!-- Logo -->
+            <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo" style="height: 40px; margin-right: 15px;">
+
+            <!-- Navigation links -->
+            <div class="nav-links" style="display: flex; align-items: center;">
+                {% for table in tables %}
+                    <a href="{{ url_for('table', table_name=table) }}" style="color: #4169E1; text-decoration: none; padding: 10px 15px; border-radius: 5px; margin-right: 10px; font-weight: bold; transition: background-color 0.3s, transform 0.2s;">
+                        {{ table }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout" style="color: white; text-decoration: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; background-color: #4169E1; transition: background-color 0.3s, transform 0.2s;">
+            Logout
+        </a>
+    </nav>
+
+    <!-- Main content -->
+    <div class="content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; width: 100%; max-width: 400px; text-align: center;">
+        <h1 style="color: #333; margin-bottom: 20px; font-size: 32px;">Welcome, Admin</h1>
+        <h2 style="font-size: 24px; margin-bottom: 20px; color: #555;">Select Course</h2>
+        <form method="POST" action="{{ url_for('start_attendance') }}" style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); width: 100%;">
+            <select name="course" required style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; background-color: #f9f9f9;">
+                {% for course in courses %}
+                    <option value="{{ course }}">{{ course }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #4169E1; border: none; border-radius: 4px; color: #fff; font-size: 16px; cursor: pointer;">
+                Start Attendance
+            </button>
+        </form>
+    </div>
+</body>
+</html>
+{% endblock %}

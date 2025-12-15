@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+    }
+    h1 {
+        color: #1E90FF;
+        font-size: 28px;
+        margin-bottom: 20px;
+        text-transform: capitalize;
+        letter-spacing: 1px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    table {
+        width: 80%;
+        margin: 0 auto 20px;
+        border-collapse: collapse;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+    }
+    th {
+        background-color: #4169E1;
+        color: white;
+        font-weight: bold;
+    }
+    td {
+        background-color: #fff;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    tr:hover {
+        background-color: #e9f5ff;
+    }
+    a, button {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #4169E1;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        margin-top: 10px;
+    }
+    a:hover, button:hover {
+        background-color: #4287ee;
+        transform: scale(1.05);
+    }
+    form.inline {
+        display: inline;
+    }
+    form.add-course {
+        margin-bottom: 20px;
+    }
+    input[type="text"] {
+        padding: 8px;
+        width: 200px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+</style>
+
+<h1>{{ table_name }} Data</h1>
+
+{% if table_name == 'courses' %}
+    <form method="POST" action="{{ url_for('add_course') }}" class="add-course">
+        <input type="text" name="course_code" placeholder="Course Code" required>
+        <input type="text" name="course_name" placeholder="Course Name" required>
+        <button type="submit">Add Course</button>
+    </form>
+{% endif %}
+
+{% if rows %}
+    <table>
+        <thead>
+            <tr>
+                {% for column in rows[0].keys() %}
+                    <th>{{ column }}</th>
+                {% endfor %}
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    {% for column in row.values() %}
+                        <td>{{ column }}</td>
+                    {% endfor %}
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_row', table_name=table_name) }}" class="inline">
+                            {% for key, value in row.items() %}
+                                <input type="hidden" name="{{ key }}" value="{{ value }}">
+                            {% endfor %}
+                            <button type="submit" onclick="return confirm('Delete this row?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No data available in this table.</p>
+{% endif %}
+
+<a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% block title %}Student Registration{% endblock %}
+{% block content %}
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background: #f3f5f7;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;     /* stack items vertically */
+    justify-content: center;    /* center vertically */
+    align-items: center;        /* center horizontally */
+    position: relative;
+}
+
+    .logo {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 100px;
+        height: auto;
+    }
+    .form-container {
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        max-width: 450px;
+        width: 100%;
+        z-index: 1;
+    }
+    h1 { color: #4169E1; margin-bottom: 20px; }
+    .form-group { margin-bottom: 15px; text-align: left; }
+    .form-group label { font-weight: bold; color: #333; margin-bottom: 5px; display: block; }
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    .form-group input:focus { border-color: #4169E1; outline: none; }
+    .photo-preview { margin-top: 10px; width: 100%; border-radius: 5px; display: none; }
+    video { width: 100%; margin-top: 10px; border-radius: 5px; }
+    .capture-controls { margin-top: 10px; }
+    button {
+        background: #4169E1;
+        color: #fff;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        width: 100%;
+        cursor: pointer;
+    }
+    button:hover { background: #478aee; }
+    .message.error {
+        background: #fce4e4;
+        color: #f44336;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #f44336;
+        border-radius: 5px;
+    }
+    .message.success {
+        background: #e8f5e9;
+        color: #4CAF50;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #4CAF50;
+        border-radius: 5px;
+    }
+    .additional-info {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #555;
+        text-align: center;
+    }
+    .additional-info a {
+        color: #4169E1;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .additional-info a:hover { text-decoration: underline; }
+</style>
+
+<!-- Logo at the top-left -->
+<img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo" class="logo">
+
+<div class="form-container">
+    <h1>Student Registration</h1>
+    {% if error_message %}
+        <div class="message error">{{ error_message }}</div>
+    {% endif %}
+    {% if success_message %}
+        <div class="message success">{{ success_message }}</div>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="UID">UID:</label>
+            <input type="text" id="UID" name="UID" value="{{ UID or '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="Name">Name:</label>
+            <input type="text" id="Name" name="Name" value="{{ Name or '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="Matric_number">Matric Number:</label>
+            <input type="text" id="Matric_number" name="Matric_number" value="{{ Matric_number or '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="Department">Department:</label>
+            <input type="text" id="Department" name="Department" value="{{ Department or '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="Level">Level:</label>
+            <input type="text" id="Level" name="Level" value="{{ Level or '' }}" required>
+        </div>
+        <div class="form-group">
+            <label>Upload Photo:</label>
+            <input type="file" name="photo_file" accept="image/*">
+        </div>
+        <div class="form-group">
+            <label>Or Capture with Webcam:</label>
+            <video id="video" autoplay></video>
+            <input type="hidden" name="webcam_image" id="webcam_image">
+            <div class="capture-controls">
+                <button type="button" onclick="captureImage()">Capture</button>
+            </div>
+            <img id="preview" class="photo-preview">
+        </div>
+        <button type="submit">Register</button>
+        <div class="additional-info">
+            <p>Are you an admin? <a href="{{ url_for('login') }}">Login</a></p>
+        </div>
+    </form>
+</div>
+
+<script>
+    const video = document.getElementById('video');
+    const webcamInput = document.getElementById('webcam_image');
+    const preview = document.getElementById('preview');
+    const uidField = document.getElementById('UID');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => video.srcObject = stream)
+        .catch(err => console.error("Webcam error:", err));
+
+    function captureImage() {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        const data = canvas.toDataURL('image/jpeg');
+        webcamInput.value = data;
+        preview.src = data;
+        preview.style.display = 'block';
+    }
+
+    // Poll UID every second
+    let polling = true;
+    function checkUID() {
+        if (!polling) return;
+        fetch('/get_uid')
+            .then(res => res.json())
+            .then(data => {
+                if (data.uid && (!uidField.value || uidField.value.trim() === '')) {
+                    uidField.value = data.uid;
+                    polling = false; // Stop polling once UID is set
+                }
+            })
+            .catch(err => console.error("UID fetch error:", err));
+    }
+
+    // Start polling and stop after 30 seconds if no UID
+    const intervalId = setInterval(checkUID, 1000);
+    setTimeout(() => {
+        if (polling) {
+            clearInterval(intervalId);
+            console.log("[INFO] UID polling stopped after 30 seconds");
+        }
+    }, 30000);
+
+    // Stop polling if UID is manually entered
+    uidField.addEventListener('input', () => {
+        if (uidField.value.trim() !== '') {
+            polling = false;
+            clearInterval(intervalId);
+            console.log("[INFO] UID polling stopped due to manual input");
+        }
+    });
+</script>
+{% endblock %}

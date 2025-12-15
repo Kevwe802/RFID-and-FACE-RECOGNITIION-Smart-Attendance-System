@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #f5f6f7, #f2f3f6);
+        margin: 0;
+        padding: 40px 0; /* top and bottom space */
+        color: #000;
+    }
+
+    .form-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        margin: 0 auto; /* horizontally center */
+    }
+
+    .logo {
+        width: 100px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus {
+        border-color: #152238;
+        outline: none;
+    }
+
+    button {
+        background: #4169E1;
+        color: #fff;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s, transform 0.2s;
+        width: 100%;
+    }
+
+    button:hover {
+        background: #5d99f4;
+        transform: scale(1.05);
+    }
+
+    p.error-message {
+        color: #f44336;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    hr.faint-line {
+        border: none;
+        border-top: 1px solid #ccc;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="form-container">
+    <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo" class="logo">
+    <h1>Admin Login</h1>
+    <hr class="faint-line">
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+    {% if error_message %}
+        <p class="error-message">{{ error_message }}</p>
+    {% endif %}
+</div>
+{% endblock %}
